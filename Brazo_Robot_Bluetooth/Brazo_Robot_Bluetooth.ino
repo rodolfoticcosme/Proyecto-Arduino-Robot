@@ -3,8 +3,8 @@
  
  Conexion del Modulo Bluetooth HC-06 y el Arduino
  ARDUINO    Bluetooth HC-06 
- 0 (RX)       TX
- 1 (TX)       RX
+ 2 (RX)       TX
+ 3 (TX)       RX
  5V           VCC
  GND          GND
  
@@ -43,56 +43,55 @@ void setup()  {
 } 
 
 void loop()  { 
-  int t1=100;
+  int t1=50;
   int t2=20;
-  int angulo=5;
-  dato='h';
+  int angulo=1;
+  //dato='h';
 
-if (BT1.available())
+  if (BT1.available())
     {  
-    dato = BT1.read();  //Lee cada carácter uno por uno y se almacena en una variable
-    Serial.println(dato);  //Imprimimos en la consola el carácter recibido
+     dato = BT1.read();  //Lee cada carácter uno por uno y se almacena en una variable
+     Serial.println(dato);  //Imprimimos en la consola el carácter recibido
     }
-  if (dato!='a' || dato!='b'){
-     digitalWrite(derA, LOW);     
-    digitalWrite(izqA, LOW);   
+  if (dato=='h'){
+     digitalWrite(derA, LOW);//Así se para el motor de cc, o con cualquier dato!= de 'a' o 'b'     
+     digitalWrite(izqA, LOW);   
     }        
-
+  if (dato=='o'){     //Podríamos decir que los servos van al punto Home de referencia
+    servo1.write(90);
+    servo2.write(90);
+    delay(t2);
+    }
   
-  if(dato=='a'){           // Boton desplazar al Frente
-    digitalWrite(derA, HIGH);     
+  if(dato=='a'){              // 1ª Articulación Base o Peana, se mueve en un sentido es la flecha B_1ªArt_Izq de la app Brazorobotbluetooth.
+    digitalWrite(derA, HIGH); // Se mueve el motor de cc gracias al LM289
     digitalWrite(izqA, LOW);       
     delay(t1);
-  }
-  if(dato=='b'){          // 
-    digitalWrite(derA, LOW);     
+    }
+  if(dato=='b'){                 // 1ª Articulación Base o Peana, se mueve en el otro sentido es la flecha B_1ªArt_Dcha de la app Brazorobotbluetooth. 
+    digitalWrite(derA, LOW);     // Se mueve el motor de cc gracias al LM289
     digitalWrite(izqA, HIGH);      
     delay(t1);
-  }
+    }
   if(dato=='c'){
      angServo1=angServo1+angulo; 
-     servo1.write(angServo1); //Mover el servo1 hacia la Izq
-     delay(t2);          //
-      }
+     servo1.write(angServo1); // 2ª Articulación Hombro, el servo1 se mueve en un sentido, es la flecha B_2ªArt_Izq de la app Brazorobotbluetooth.
+     delay(t2);          
+     }
   if(dato=='d'){ 
     angServo1=angServo1-angulo; 
-    servo1.write(angServo1); ////Mover el servo1 hacia la Dcha
-     delay(t2);          //
-  } 
+    servo1.write(angServo1); // 2ª Articulación Hombro, el servo1 se mueve en el otro sentido, es la flecha B_2ªArt_Dcha de la app Brazorobotbluetooth.
+     delay(t2);          
+     } 
 if(dato=='e'){
      angServo2=angServo2+angulo; 
-     servo2.write(angServo2); //Mover el servo2 hacia la Izq
-     delay(t2);          //
+     servo2.write(angServo2); // 3ª Articulación Codo, el servo2 se mueve en un sentido, es la flecha B_3ªArt_Izq de la app Brazorobotbluetooth.
+     delay(t2);          
       }
   if(dato=='f'){ 
     angServo2=angServo2-angulo; 
-    servo2.write(angServo2); ////Mover el servo2 hacia la Dcha
-     delay(t2);          //
-  }
-  
-     
-  
- 
-
+    servo2.write(angServo2); // 3ª Articulación Codo, el servo2 se mueve en el otro sentido, es la flecha B_3ªArt_Dcha de la app Brazorobotbluetooth.
+     delay(t2);          
+   }
   
 }
